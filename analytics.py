@@ -107,13 +107,13 @@ class DataAnalyzer(object):
         else:
             self.cont_cols = cont_cols
 
-        self.date_cols = self.df.select_dtypes(include=['datetime64']).columns
+        self.date_cols = self.df.select_dtypes(include=['datetime64', 'timedelta64']).columns
         self.disc_cols = [c for c in self.df.columns
                           if c not in [*self.cont_cols, *self.date_cols, *self.sparse_cols]]
         self.regr = self.target in self.cont_cols
 
     def encode(self):
-        for cat in self.disc_cols:
+        for cat in [*self.disc_cols, *self.sparse_cols]:
             codes, uniques = pd.factorize(self.df[cat].replace(np.nan, 'nan'), sort=True)#, use_na_sentinel=False)
             self.df[cat] = codes
             self.idx2categ[cat] = {k: v for k, v in enumerate(uniques)}
@@ -138,11 +138,12 @@ class DataAnalyzer(object):
         print("\n".join([f"\t{s}" for s in self.cont_cols]), "\n")
 
         print(f"Discrete Columns Encoding:")
-        print("\n".join([f"\t{s}: {self.categ_map[s]}" for s in self.disc_cols]))
+        print("\n".join([f"\t{k}: {v}" for k, v in self.categ_map.items()]))
 
     # -------------------- EDA PLOTS --------------------
-    def data_quality_check(self, miss_thres=0.01, one_figsize=(15, 5)):
-        pplot.data_quality_check(self.df_orig, self.disc_cols, self.sparse_cols, miss_thres, one_figsize=one_figsize)
+    def data_quality_check(self, check_zero=False, miss_thres=0., one_figsize=(15, 5)):
+        pplot.data_quality_check(self.df_orig, self.disc_cols, self.sparse_cols,
+                                 check_zero, miss_thres, one_figsize=one_figsize)
 
     def plot_categ_stats(self, **kwargs):
         for categ_col in self.disc_cols:
@@ -202,23 +203,17 @@ class DataAnalyzer(object):
             one_ax.set_xlabel(None)
         plt.suptitle(f'Distribution plots for {categ} Categories', y=1)
         plt.tight_layout()
+        #pplot.legend_outside(fig=fig, ax=ax)
         plt.show()
 
     # -------------------- RELATIONSHIP PLOTS --------------------
 
-    def cluster_features(self, corr_method='dcorr', n_clusters=None,
-                         min_asso=0.9, power=1, **kwargs):
-        if n_clusters is not None:
-            distance_threshold = None
-        else:
-            distance_threshold = np.sqrt(1 - min_asso ** power)
-        # TODO: show similarity matrix after clustering
-        similarity_matrix = self.calc_corr(corr_method, **kwargs)
+    def cluster_features(self, corr_method='dcorr', linkage='complete', n_clusters=None,
+                         min_asso=None, power=1, corr_kws={}, **kwargs):
+        similarity_matrix = self.calc_corr(corr_method, **corr_kws)
         _, distance_matrix = pstats.corr2dist(similarity_matrix, power=power)
-        AGNES = FeatureAgglomeration(metric='precomputed', linkage='complete',
-                                     distance_threshold=distance_threshold, n_clusters=n_clusters)
-        AGNES.fit(distance_matrix)
-        cluster_book = put.swap(dict(zip(AGNES.feature_names_in_, AGNES.labels_)))
+        cluster_book = pstats.feature_agglomeration(distance_matrix, n_clusters=n_clusters, min_asso=min_asso,
+                          linkage=linkage, power=power, **kwargs)
         return cluster_book
 
     def calc_corr(self, corr_method='dcorr', **corr_kws):

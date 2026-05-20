@@ -6,6 +6,9 @@ from dcor import distance_covariance_sqr
 import numpy as np
 import pandas as pd
 
+import util
+
+
 @njit(float64(float64[:], float64[:], boolean, boolean), parallel=True)
 def _dcov(x, y, x_disc=False, y_disc=False):
     sumprod_xy, sum_x, sum_y, n_valid = 0., 0., 0., 0.
@@ -79,10 +82,17 @@ def fast_dd_dcov(x_disc, y_disc):
     return cov
 
 
-def fast_cd_dcov(x_cont, y_disc):
+def fast_cd_dcov(x_cont, y_disc, min_prob=0.01):
     x2, y2 = pair_dropna(x_cont, y_disc)
     unique_values, counts = np.unique(y2, return_counts=True)
     y_prob = counts / np.sum(counts)
+
+    # edists=0 for small categories
+    large_cat = y_prob >= min_prob
+    if sum(large_cat) == 0:
+        return 0. #np.nan
+
+    unique_values, y_prob = unique_values[large_cat], y_prob[large_cat]
     edists = np.array([energy_distance(x2[y2 == c], x2) for c in unique_values])
     dcov = np.sum((edists * y_prob) ** 2)
     return dcov
@@ -92,19 +102,19 @@ def fast_dc_dcov(x_disc, y_cont):
     return fast_cd_dcov(y_cont, x_disc)
 
 
-def distance_correlation(X: pd.DataFrame, disc_features=[], rank=True, debug=False):
+def distance_correlation(X: pd.DataFrame, disc_features=[], rank=True, debug=False, **kwargs):
     if rank:
         X = X.copy()
         cont_features = X.columns[~X.columns.isin(disc_features)]
         X[cont_features] = X[cont_features].rank(pct=True)
 
-    cov_mat = {}
     FAST_FUNCS = {(False, False): fast_cc_dcov,
                   (False, True): fast_cd_dcov,
                   (True, False): fast_dc_dcov,
                   (True, True): fast_dd_dcov}
 
-    for col1, col2 in combinations_with_replacement(X, 2):
+    def _run_one(columns):
+        col1, col2 = columns
         x_disc = col1 in disc_features
         y_disc = col2 in disc_features
 
@@ -120,8 +130,9 @@ def distance_correlation(X: pd.DataFrame, disc_features=[], rank=True, debug=Fal
 
         if dc is None or dc < -1e-4:
             raise ValueError("Negative dCov: ", dc, X[[col1, col2]])
-        cov_mat[col1, col2] = max(dc, 0)
+        return max(dc, 0)
 
+    cov_mat = util.parallel(_run_one, list(combinations_with_replacement(X, 2)), **kwargs)
     cov_mat = pd.Series(cov_mat).unstack()
     cov_mat = cov_mat.loc[X.columns, X.columns]
     cov_mat = cov_mat.fillna(cov_mat.T)

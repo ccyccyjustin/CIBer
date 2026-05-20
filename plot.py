@@ -85,32 +85,35 @@ def legend_outside(fig=None, handles=None, labels=None, ax=None,
     return fig.legend(handles, labels, **kws)
 
 
-def data_quality_check(df, disc_cols=[], sparse_cols=[], miss_thres=0., one_figsize=(15, 5)):
+def data_quality_check(df, disc_cols=[], sparse_cols=[], check_zero=False, miss_thres=0., one_figsize=(15, 5)):
     ncols = 2
     if len(disc_cols) > 0:
         ncols += 1
     if len(sparse_cols) > 0:
         ncols += 1
-    layout, figsize = scale_figsize(4, one_figsize=one_figsize, n_col=1)
+    layout, figsize = scale_figsize(ncols, one_figsize=one_figsize, n_col=1)
     fig, ax = plt.subplots(*layout, figsize=figsize)
 
     df_dense = df.drop(columns=sparse_cols)
-    missing_pct = df_dense.isna().mean().sort_values()
-    missing_pct = missing_pct[missing_pct > miss_thres]
-    missing_pct.pplot.barh(title='Percentage of Missing Values', ax=ax[0], xlim=(0, 1))
+    is_missing = df_dense.isna()
+    if check_zero:
+        is_missing = is_missing | (df_dense._get_numeric_data().abs() < 1e-6)
+    missing_pct = is_missing.mean().sort_values()
+    missing_pct = missing_pct[missing_pct >= miss_thres]
+    missing_pct.plot.barh(title='Percentage of Missing Values', ax=ax[0], xlim=(0, 1))
     annotate(ax[0], fmt="{:.0%}")
 
     nuni = df_dense.nunique().sort_values(ascending=False)
-    nuni.drop(disc_cols).pplot.barh(title='Number of Unique Values (Cont. Cols)', ax=ax[1])
+    nuni.drop(disc_cols).plot.barh(title='Number of Unique Values (Cont. Cols)', ax=ax[1])
     annotate(ax[1])
 
     if len(disc_cols) > 0:
-        nuni[nuni.index.isin(disc_cols)].pplot.barh(title='Number of Unique Values (Disc. Cols)', ax=ax[2])
+        nuni[nuni.index.isin(disc_cols)].plot.barh(title='Number of Unique Values (Disc. Cols)', ax=ax[2])
         annotate(ax[2])
 
     if len(sparse_cols) > 0:
         sparse_counts = df[sparse_cols].notna().mean().sort_values(ascending=False)
-        sparse_counts.pplot.barh(title='%Count of Sparse Cols', ax=ax[-1])
+        sparse_counts.plot.barh(title='%Count of Sparse Cols', ax=ax[-1])
         annotate(ax[-1], fmt="{:.0%}")
 
     fig.tight_layout()
@@ -141,8 +144,12 @@ def plot_corr(corr, dist=False, power=2,
     return g
 
 
-def plot_contingency(ctg_tab, sort=True, one_figsize=(8, 8), corr=False,
+def plot_contingency(ctg_tab, sort=True, one_figsize=(8, 8), corr=False, min_marg_prob=0.01, min_cond_prob=0.1,
                      xname=None, yname=None, title=None, n_col=2, **kwargs):
+    if xname is None:
+        xname = ctg_tab.axes[0].name
+    if yname is None:
+        yname = ctg_tab.axes[1].name
 
     tab = sm.stats.Table(ctg_tab)
     if corr:
@@ -153,12 +160,21 @@ def plot_contingency(ctg_tab, sort=True, one_figsize=(8, 8), corr=False,
         to_show = ctg_tab.copy()
 
     row_pct, col_pct = tab.marginal_probabilities
+    # row_pct, col_pct = row_pct[row_pct >= min_prob], col_pct[col_pct >= min_prob]
+
+    if len(row_pct) == 0:
+        print(f'Categories {xname} too sparse, skipping plot!')
+        return
+
+    if len(col_pct) == 0:
+        print(f'Categories {yname} too sparse, skipping plot!')
+        return
 
     if sort:
         row_pct = row_pct.sort_values(ascending=False)
         col_pct = col_pct.sort_values(ascending=False)
-        to_show = to_show.loc[row_pct.index, col_pct.index]
 
+    to_show = to_show.loc[row_pct.index, col_pct.index]
     to_show.index += row_pct.apply(lambda x: f' ({x * 100:.0f}%)').values
     to_show.columns += col_pct.apply(lambda x: f' ({x * 100:.0f}%)').values
 
@@ -167,15 +183,15 @@ def plot_contingency(ctg_tab, sort=True, one_figsize=(8, 8), corr=False,
                        center=0, fmt='.0f', title=title, vmin=-100, vmax=100, **kwargs)
 
     row_norm = to_show.T.div(to_show.sum(axis=1)) * 100
+    row_norm = row_norm.iloc[:, np.where(row_pct >= min_marg_prob)[0]]
+    row_norm = row_norm[(row_norm >= min_cond_prob * 100).any(axis=1)]
+
     col_norm = to_show.div(to_show.sum()) * 100
+    col_norm = col_norm.iloc[:, np.where(col_pct >= min_marg_prob)[0]]
+    col_norm = col_norm[(col_norm >= min_cond_prob * 100).any(axis=1)]
 
     layout, figsize = scale_figsize(2, one_figsize=one_figsize, n_col=n_col)
     fig, ax = plt.subplots(*layout, figsize=figsize)
-
-    if xname is None:
-        xname = ctg_tab.axes[0].name
-    if yname is None:
-        yname = ctg_tab.axes[1].name
 
     heatmap(row_norm, center=0, vmax=100, fmt='.0f', ax=ax[0], title=f'Normalized by {xname}', **kwargs)
     heatmap(col_norm, center=0, vmax=100, fmt='.0f', ax=ax[1], title=f'Normalized by {yname}', **kwargs)
@@ -220,4 +236,94 @@ def plot_categ_stats(categ_series, categ_name=None, n_bucket=30,
     if title is None:
         title = f'% Count of Categories for {categ_name}, # Unique={len(cate_count)}'
     categ_stats = pd.concat([big_categ, small_categ_stats])
-    return categ_stats[::-1].pplot.barh(title=title, figsize=figsize, **kwargs)
+    return categ_stats[::-1].plot.barh(title=title, figsize=figsize, **kwargs)
+
+
+def plot_surface(df, figsize=(15, 10), title='',
+                 xlabel=None, ylabel=None, contour=True,
+                 aspect=(1, 1, 1), contour_margins=(0.25, 0.5, 1),
+                 elev=30, azim=-135):
+    """
+    :param df: should be grid-like, index will be 'x', columns will be 'y'
+    :param figsize:
+    :param title:
+    :param xlabel:
+    :param ylabel:
+    :param aspect:
+    :param contour_margins:
+    :return:
+    """
+
+    xlabel = xlabel or df.index.name or "x"
+    ylabel = ylabel or df.columns.name or "y"
+
+    x, y = df.index, df.columns
+    X, Y = np.meshgrid(x, y)
+    Z = df.T.values
+
+    ax = plt.figure(figsize=figsize).add_subplot(projection='3d')
+    ax.plot_surface(X, Y, Z, cmap=CMAP)
+    ax.set_box_aspect(aspect=aspect)
+
+    kwargs = {}
+    if contour:
+        for dim, var, offset_dir, margin in zip(['x', 'y', 'z'], [x, y, Z], ['-', '+', '-'], contour_margins):
+            var_min, var_max = np.nanmin(var), np.nanmax(var)
+            var_range = var_max - var_min
+
+            if offset_dir == '-':
+                offset = var_min - margin * var_range
+                kwargs[f'{dim}lim'] = (offset, var_max)
+            else:
+                offset = var_max + margin * var_range
+                kwargs[f'{dim}lim']  = (var_min, offset)
+
+            kwargs[f'{dim}ticks'] = ax.__getattribute__(f'get_{dim}ticks')()
+            ax.contourf(X, Y, Z, zdir=dim, offset=offset, cmap=CMAP)
+
+    ax.set(title=title, xlabel=xlabel, ylabel=ylabel, **kwargs)
+    ax.view_init(elev=elev, azim=azim)
+    return ax
+
+def points2surf(X, y):
+    assert len(X) == len(y)
+    d = X.shape[1]
+    df = pd.Series(y.flatten(), index=pd.MultiIndex.from_arrays(X.T))
+    df = df.rename_axis([f'x_{i+1}' for i in range(d)]).rename('y')
+    df = df.unstack(level=list(range(1, df.index.nlevels))) # Only keep x_1 as index
+    return df
+
+def surf2points(df):
+    return df.stack(level=list(range(df.columns.nlevels))).rename('y').reset_index()
+
+def scatter_3d(df, ax=None, figsize=(15, 10), title='',
+                 xlabel=None, ylabel=None,
+                 aspect=(1, 1, 1), contour_margins=(0.25, 0.5, 1),
+                 elev=30, azim=315, **kwargs):
+    """
+    :param df: should be grid-like, index will be 'x', columns will be 'y'
+    :param figsize:
+    :param title:
+    :param xlabel:
+    :param ylabel:
+    :param aspect:
+    :param contour_margins:
+    :return:
+    """
+    p = surf2points(df)
+    xlabel = xlabel or df.index.name or "x"
+    ylabel = ylabel or df.columns.name or "y"
+
+    if ax is None:
+        ax = plt.figure(figsize=figsize).add_subplot(projection='3d')
+        ax.set_box_aspect(aspect=aspect)
+
+        ax.set(title=title, xlabel=xlabel, ylabel=ylabel)#, **kwargs)
+        ax.view_init(elev=elev, azim=azim)
+
+    if kwargs.get('color') is None and kwargs.get('c') is None:
+        kwargs['c'] = p.values[:, -1]
+        kwargs['cmap'] = CMAP
+
+    ax.scatter3D(*p.values.T, **kwargs)
+    return ax

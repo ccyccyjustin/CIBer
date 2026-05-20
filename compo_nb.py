@@ -28,7 +28,8 @@ class CompositeNB(object):
         X_cont = np.where(np.isnan(X_cont), self.X_train_means, X_cont)
 
         if self.gaussian:
-            self.qt = QuantileTransformer(n_quantiles=X_cont.shape[0])
+            self.qt = QuantileTransformer()
+            self.qt.set_params(n_quantiles=min(X_cont.shape[0], self.qt.subsample))
             X_cont = self.qt.fit_transform(X_cont)
             X_cont = norm.ppf(X_cont).clip(-3, 3)
 
