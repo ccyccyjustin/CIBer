@@ -9,3 +9,6 @@ Link to the Raw Datasets:
 - Manufacturing Defects: https://www.kaggle.com/datasets/rabieelkharoua/predicting-manufacturing-defects-dataset
 - Smart Logistics: https://www.kaggle.com/datasets/ziya07/smart-logistics-supply-chain-dataset
 - Supply Chain Shipment (SCMS): https://www.usaid.gov/data/dataset/0162a542-4f2e-4fe2-ad5d-8f6ed2344056
+
+CIBer-Run.ipynb will call CIBer_Evaluation.ipynb, which uses Papermill to run experiments for different datasets,
+as specified in data_cfg.yml
