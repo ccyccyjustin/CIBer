@@ -1,0 +1,101 @@
+Amazon:
+  cont_cols:
+  - Store_Latitude
+  - Store_Longitude
+  - Order_Time
+  - Delivery_Time
+  - Drop_Distance
+  - Order_Date
+  fname: Amazon.csv
+  index: 0
+  iter: 100
+  targets:
+  - Dissatisfied
+  - Delivery_Time
+DataCo:
+  cont_cols:
+  - Latitude
+  - Longitude
+  - Order Item Discount Rate
+  - Order Item Profit Ratio
+  - Product Price
+  - order date (DateOrders)
+  fname: DataCo.csv
+  index: 0
+  iter: 300
+  max_batch_size: 5000
+  targets:
+  - Delivery Status
+  - Order Status
+  - Order Item Quantity
+  - Customer Segment
+  - Shipping Mode
+SCMS:
+  cont_cols:
+  - Unit of Measure (Per Pack)
+  - Line Item Quantity
+  - Weight (Kilograms)
+  - Freight Cost (USD)
+  - 'PO / SO #_1'
+  - 'ASN/DN #_1'
+  - Unit Price
+  - Insurance Ratio
+  - POCycle
+  fname: SCMS.csv
+  index: 0
+  iter: 100
+  targets:
+  - IsDelay
+  - Vendor INCO Term
+  - Shipment Mode
+  - First Line Designation
+defects:
+  cont_cols:
+  - ProductionVolume
+  - ProductionCost
+  - SupplierQuality
+  - DefectRate
+  - QualityScore
+  - MaintenanceHours
+  - DowntimePercentage
+  - InventoryTurnover
+  - StockoutRate
+  - WorkerProductivity
+  - EnergyConsumption
+  - EnergyEfficiency
+  - AdditiveProcessTime
+  - AdditiveMaterialCost
+  fname: defects.csv
+  index: 0
+  iter: 300
+  targets:
+  - DefectStatus
+Income:
+  cont_cols:
+  - age
+  - fnlwgt
+  - capital-gain
+  - capital-loss
+  - hours-per-week
+  fname: Income.csv
+  index: 0
+  iter: 50
+  targets:
+  - income
+  - occupation
+SmartLog:
+  cont_cols:
+  - Latitude
+  - Longitude
+  - Inventory_Level
+  - Temperature
+  - Humidity
+  - Waiting_Time
+  - User_Transaction_Amount
+  - Asset_Utilization
+  - Demand_Forecast
+  fname: SmartLog.csv
+  index: 0
+  iter: 300
+  targets:
+  - Logistics_Delay

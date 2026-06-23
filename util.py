@@ -72,5 +72,3 @@ def load_yml(fname=None, dir=None):
     with open(path, 'r') as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
     return cfg
-
-from QuantLib import HestonProcess

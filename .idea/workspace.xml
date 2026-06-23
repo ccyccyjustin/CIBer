@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20f6643d-8a27-4d3b-8850-815e4b11fa50" name="Changes" comment="init">
-      <change afterPath="$PROJECT_DIR$/tree.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CIBer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CIBer.iml" afterDir="false" />
+    <list default="true" id="20f6643d-8a27-4d3b-8850-815e4b11fa50" name="Changes" comment="Updates">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CIBayes.py" beforeDir="false" afterPath="$PROJECT_DIR$/CIBayes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_dcorr.py" beforeDir="false" afterPath="$PROJECT_DIR$/_dcorr.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics.py" beforeDir="false" afterPath="$PROJECT_DIR$/analytics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compo_nb.py" beforeDir="false" afterPath="$PROJECT_DIR$/compo_nb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/stats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CIBer_Evaluation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/CIBer_Evaluation.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/Income.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/SMCS.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notebooks/SmartLog.ipynb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -88,7 +84,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771743911610</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Updates">
+      <option name="closed" value="true" />
+      <created>1779268643619</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1779268643619</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -104,6 +108,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="Updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updates" />
   </component>
 </project>
