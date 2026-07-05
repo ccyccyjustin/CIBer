@@ -10,9 +10,10 @@ Link to the Raw Datasets:
 - Smart Logistics: https://www.kaggle.com/datasets/ziya07/smart-logistics-supply-chain-dataset
 - Supply Chain Shipment (SCMS): https://www.usaid.gov/data/dataset/0162a542-4f2e-4fe2-ad5d-8f6ed2344056
 
-Structure:
+## Structure
 
-CIBer-Run.ipynb will call CIBer_Evaluation.ipynb, which uses Papermill to run experiments for different datasets,
-as specified in data_cfg.yml
-
-Final Output is displayed in Evaluation/ModelScoreCharts.ipynb
+* ciber: scripts from EDA, model fitting to utils
+* Engineering: Notebook Demo on how CIBer detects feature dependence
+* Processed: Datasets post-processing
+* Experiment: Papermill to run experiments for different datasets, as specified in data_cfg.yml
+* Evaluation: Metric comparison of CIBer vs benchmark models
