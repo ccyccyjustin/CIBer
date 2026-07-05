@@ -12,8 +12,8 @@ Link to the Raw Datasets:
 
 ## Structure
 
-* ciber: scripts from EDA, model fitting to utils
-* Engineering: Notebook Demo on how CIBer detects feature dependence
+* ciber: Scripts from EDA, model fitting to utils
+* Engineering: Illustrative examples on how CIBer models dependence structures and improves feature selection quality
 * Processed: Datasets post-processing
-* Experiment: Papermill to run experiments for different datasets, as specified in data_cfg.yml
+* Experiment: Run experiments with Papermill for different datasets, as specified in data_cfg.yml
 * Evaluation: Metric comparison of CIBer vs benchmark models
