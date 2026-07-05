@@ -6,7 +6,7 @@ from dcor import distance_covariance_sqr
 import numpy as np
 import pandas as pd
 
-import util
+from ciber.utils import misc
 
 
 @njit(float64(float64[:], float64[:], boolean, boolean), parallel=True)

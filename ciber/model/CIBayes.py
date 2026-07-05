@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from sklearn.utils.validation import _is_fitted
-from sklearn.metrics import d2_absolute_error_score, r2_score, log_loss, mean_squared_error, f1_score
+from sklearn.metrics import r2_score, f1_score
 from sklearn.preprocessing import QuantileTransformer
 
 from scipy.stats import norm, gaussian_kde
@@ -17,7 +17,7 @@ from skfda.preprocessing.smoothing import KernelSmoother
 from skfda.misc.hat_matrix import NadarayaWatsonHatMatrix
 from skfda import FDataGrid
 
-import plot as pplot
+from ciber.utils import plot as pplot
 import time
 
 

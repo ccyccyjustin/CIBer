@@ -4,14 +4,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from scipy.stats import gaussian_kde
-from sklearn.cluster import FeatureAgglomeration, AgglomerativeClustering
 from sklearn.utils.class_weight import compute_sample_weight
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler, RobustScaler
 from imblearn.over_sampling import SMOTENC
 
-import util as put
-import plot as pplot
+from ciber.utils import plot as pplot, misc as put
 import stats as pstats
 
 
@@ -150,11 +148,16 @@ class DataAnalyzer(object):
             pplot.plot_categ_stats(self.df_orig[categ_col], **kwargs)
             plt.show()
 
-    def dist_plot(self, title='Histogram', stat='density', one_figsize=(5, 3), n_col=3, **kwargs):
-        layout, figsize = pplot.scale_figsize(self.df.shape[1], one_figsize, n_col)
+    def dist_plot(self, exclude_sparse=False,
+                  title='Histogram', stat='density', one_figsize=(5, 3), n_col=3, **kwargs):
+        columns = self.df.columns
+        if exclude_sparse:
+            columns = columns.drop(self.sparse_cols)
+
+        layout, figsize = pplot.scale_figsize(len(columns), one_figsize, n_col)
         fig, ax = plt.subplots(*layout, figsize=figsize)
 
-        for n, c in enumerate(self.df.columns):
+        for n, c in enumerate(columns):
             i, j = n // layout[1], n % layout[1]
             one_ax = ax[i, j]
             kde = c in self.cont_cols

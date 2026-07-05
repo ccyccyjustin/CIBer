@@ -6,8 +6,8 @@ import statsmodels.api as sm
 from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import squareform
 
-import stats as pstats
-import util as put
+from ciber.analytics import stats as pstats
+import misc as put
 
 CMAP = sns.diverging_palette(20, 220, as_cmap=True)
 
@@ -112,7 +112,7 @@ def data_quality_check(df, disc_cols=[], sparse_cols=[], check_zero=False, miss_
         annotate(ax[2])
 
     if len(sparse_cols) > 0:
-        sparse_counts = df[sparse_cols].notna().mean().sort_values(ascending=False)
+        sparse_counts = df[sparse_cols].replace(0.0, np.nan).notna().mean().sort_values(ascending=True)
         sparse_counts.plot.barh(title='%Count of Sparse Cols', ax=ax[-1])
         annotate(ax[-1], fmt="{:.0%}")
 

@@ -1,14 +1,11 @@
 # -------------------- MUTUAL INFORMATION AND DISTANCE CORRELATION --------------------
-import numpy as np
 import pandas as pd
 from sklearn.feature_selection._mutual_info import *
 from sklearn.feature_selection._mutual_info import _compute_mi, _iterate_columns
 from scipy.spatial.distance import squareform
 from itertools import combinations
-import util as put
-import plot as pplot
+from ciber.utils import plot as pplot, misc as put
 
-from _dcorr import distance_correlation
 from sklearn.cluster import FeatureAgglomeration
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import silhouette_score, silhouette_samples
