@@ -10,8 +10,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler, Ro
 from imblearn.over_sampling import SMOTENC
 
 from ciber.utils import plot as pplot, misc as put
-import stats as pstats
-
+import ciber.analytics.stats as pstats
 
 SCALERS = {'Standard': StandardScaler,
            'MinMax': MinMaxScaler,

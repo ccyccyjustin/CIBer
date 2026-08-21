@@ -5,9 +5,7 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import squareform
-
-from ciber.analytics import stats as pstats
-import misc as put
+from ciber.utils import misc as put
 
 CMAP = sns.diverging_palette(20, 220, as_cmap=True)
 
@@ -124,10 +122,20 @@ def data_quality_check(df, disc_cols=[], sparse_cols=[], check_zero=False, miss_
 def plot_corr(corr, dist=False, power=2,
               cluster=True, linkage_method='complete', optimal_ordering=True,
               corr_thres=None, annot=True, title=None, **kwargs):
+
+    def corr2dist(corr, power=2):
+        dist_mat = np.sqrt(1 - np.abs(corr) ** power)
+        dist_mat_filled = dist_mat.copy()
+        mask = put.is_diag(corr)
+        dist_mat_filled[mask] = 0
+        dist_mat_filled = dist_mat_filled.fillna(1)
+        dist_mat_filled = (dist_mat_filled + dist_mat_filled.T) / 2
+        return dist_mat, dist_mat_filled
+
     mask = put.is_diag(corr)
     center = 100 if dist else 0
     kwargs = {**{"fmt": '.0f', 'center': center, 'vmin': -100, 'vmax': 100}, **kwargs}
-    dist_mat, dist_mat_filled = pstats.corr2dist(corr, power)
+    dist_mat, dist_mat_filled = corr2dist(corr, power)
 
     if corr_thres is not None:
         mask = mask | (corr.abs() <= corr_thres)

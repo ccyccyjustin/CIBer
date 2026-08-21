@@ -4,18 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20f6643d-8a27-4d3b-8850-815e4b11fa50" name="Changes" comment="/">
+    <list default="true" id="20f6643d-8a27-4d3b-8850-815e4b11fa50" name="Changes" comment="Code Structure Reorganization">
+      <change beforePath="$PROJECT_DIR$/.idea/CIBer.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CIBer.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CIBayes.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/model/CIBayes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CIBer-Run.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Experiment/CIBer_Run.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CIBer_Evaluation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Experiment/CIBer_Evaluation.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_dcorr.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/analytics/_dcorr.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/analytics/analytics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compo_nb.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/model/compo_nb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_cfg.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Experiment/data_cfg.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/utils/plot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/analytics/stats.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/utils/misc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ciber/analytics/_dcorr.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/analytics/_dcorr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ciber/analytics/analytics.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/analytics/analytics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ciber/analytics/stats.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/analytics/stats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ciber/utils/plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/ciber/utils/plot.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -125,7 +120,15 @@
       <option name="project" value="LOCAL" />
       <updated>1782208485373</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Code Structure Reorganization">
+      <option name="closed" value="true" />
+      <created>1783271063299</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1783271063299</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -145,6 +148,7 @@
     <MESSAGE value="Add Datasets and Notebooks" />
     <MESSAGE value="Update Evaluation.ipynb" />
     <MESSAGE value="/" />
-    <option name="LAST_COMMIT_MESSAGE" value="/" />
+    <MESSAGE value="Code Structure Reorganization" />
+    <option name="LAST_COMMIT_MESSAGE" value="Code Structure Reorganization" />
   </component>
 </project>

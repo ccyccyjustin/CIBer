@@ -4,12 +4,15 @@ from sklearn.feature_selection._mutual_info import *
 from sklearn.feature_selection._mutual_info import _compute_mi, _iterate_columns
 from scipy.spatial.distance import squareform
 from itertools import combinations
-from ciber.utils import plot as pplot, misc as put
+from ciber.utils import plot as pplot
+from ciber.utils import misc as put
+from ciber.analytics._dcorr import distance_correlation
 
 from sklearn.cluster import FeatureAgglomeration
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import silhouette_score, silhouette_samples
 import matplotlib.pyplot as plt
+
 
 def estimate_mi(
         X,

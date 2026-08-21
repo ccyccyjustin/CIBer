@@ -6,7 +6,7 @@ from dcor import distance_covariance_sqr
 import numpy as np
 import pandas as pd
 
-from ciber.utils import misc
+import ciber.utils.misc as put
 
 
 @njit(float64(float64[:], float64[:], boolean, boolean), parallel=True)
@@ -132,7 +132,7 @@ def distance_correlation(X: pd.DataFrame, disc_features=[], rank=True, debug=Fal
             raise ValueError("Negative dCov: ", dc, X[[col1, col2]])
         return max(dc, 0)
 
-    cov_mat = util.parallel(_run_one, list(combinations_with_replacement(X, 2)), **kwargs)
+    cov_mat = put.parallel(_run_one, list(combinations_with_replacement(X, 2)), **kwargs)
     cov_mat = pd.Series(cov_mat).unstack()
     cov_mat = cov_mat.loc[X.columns, X.columns]
     cov_mat = cov_mat.fillna(cov_mat.T)
